@@ -65,7 +65,13 @@ def end_flag(flag, game_win):
             dice_make()
 
 
-def sum_dice_game(game_win):
+def sum_dice_game():
+    """
+    합계 주사위 게임, 야바위
+    만일 총 이긴 횟수를 계속 카운트 하려면 game_win으로 받아온다.
+    :return: int 게임의 이긴 횟수를 되돌려준다.
+    """
+    game_win = 0
     exec_flag = "yes"
     while exec_flag != "no":
         comp_total = dice_sum("컴퓨터")
@@ -83,7 +89,13 @@ def sum_dice_game(game_win):
     return game_win
 
 
-def odd_even_dice_game(game_win):
+def odd_even_dice_game():
+    """
+    홀짝 게임
+    만일 총 이긴 횟수를 계속 카운트 하려면 game_win으로 받아온다.
+    :return: int 게임의 이긴 횟수를 되돌려준다.
+    """
+    game_win = 0
     exec_flag = "yes"
     while exec_flag != "no":
         user_choice = ""
@@ -129,9 +141,9 @@ while True:
             user_choice_game = int(user_choice_game)
 
     if user_choice_game == 1:
-        sum_dice_game_win += sum_dice_game(sum_dice_game_win)
+        sum_dice_game_win += sum_dice_game()
     elif user_choice_game == 2:
-        odd_even_game_win += odd_even_dice_game(odd_even_game_win)
+        odd_even_game_win += odd_even_dice_game()
     elif user_choice_game == "exit":
         print("사죵자는 주사위 합계 게임을 %d번, 홀짝게임을 %d번 이겼습니다." % (sum_dice_game_win, odd_even_game_win))
         print("게임을 종료합니다.")
