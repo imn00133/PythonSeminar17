@@ -12,7 +12,7 @@ while money > 100:
             print("(%d원), " % coffee_value[coffee_dict[i]], end="")
         else:
             print("")
-    
+
     # 커피를 선택
     user_choice = 0
     while user_choice <= 0 or user_choice > len(coffee_dict):
