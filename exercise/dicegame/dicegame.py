@@ -15,6 +15,7 @@ def dice_make():
             print("잘못 입력하셨습니다. 면의 개수는 정다면체(4, 6, 8, 12, 20)만 가능합니다.")
         else:
             break
+    dice_num = int(input("주사위의 개수를 입력하세요: "))
     while dice_num <= 0:
         dice_num = int(input("주사위의 개수를 입력하세요: "))
 
@@ -22,8 +23,8 @@ def dice_make():
 def dice_sum(user):
     """
     주사위 사용자, 면, 개수를 받아 합을 출력해준다. 주사위 개수는 1이 초기값이다.
+    마지막 합계에서는 줄바꿈을 하지 않는다.
     :param user: string 사용자 이름
-    :param dice_num: int 주사위 개수
     :return: int 총 계
     """
     dice_return = []
@@ -39,17 +40,67 @@ def dice_sum(user):
         print("%d" % dice_return[i], end="")
         if i != len(dice_return)-1:
             print(", ", end="")
-    print(" 합계: %d" % dice_total)
+    print(" 합계: %d" % dice_total, end="")
     return dice_total
 
 
-def sum_dice_game(game_win):
+def end_flag(flag, game_win):
+    """
+    같은 종료방식을 쓰기 때문에 재사용한다.
+    :param flag: string 이겼는지 졌는지 받아옴 win과 lose, draw가 가능하다.
+    :param game_win: int 몇 번 이겼는지 받아옴
+    :return: string 다시 하는지에 대해서 반환해준다.
+    """
+    if flag == "win":
+        print("사용자가 %d번 이겼습니다." % game_win)
+    elif flag == "draw":
+        print("비겼습니다.")
+    else:
+        print("사용자가 졌습니다.")
+    while True:
+        exec_flag = input("다시하시겠습니까(yes/no/change)? ")
+        if exec_flag == "yes" or exec_flag == "no":
+            return exec_flag
+        elif exec_flag == "change":
+            dice_make()
 
+
+def sum_dice_game(game_win):
+    exec_flag = "yes"
+    while exec_flag != "no":
+        comp_total = dice_sum("컴퓨터")
+        print("")
+        user_total = dice_sum("사용자")
+        print("")
+        if comp_total < user_total:
+            flag = "win"
+            game_win += 1
+        elif comp_total == user_total:
+            flag = "draw"
+        else:
+            flag = "lose"
+        exec_flag = end_flag(flag, game_win)
     return game_win
 
 
 def odd_even_dice_game(game_win):
-
+    exec_flag = "yes"
+    while exec_flag != "no":
+        user_choice = ""
+        while user_choice != "홀" and user_choice != "짝":
+            user_choice = input("홀/짝을 입력해주세요: ")
+        comp_total = dice_sum("컴퓨터")
+        if comp_total % 2 == 0:
+            comp_value = "짝"
+        else:
+            comp_value = "홀"
+        print("(%s)" % comp_value)
+        if comp_value == user_choice:
+            flag = "win"
+            game_win += 1
+        else:
+            flag = "lose"
+        exec_flag = end_flag(flag, game_win)
     return game_win
 
 
@@ -71,9 +122,11 @@ while True:
         # 확장성을 위해 게임리스트를 리스트로 만들고 출력한다.
         for i in range(len(game_list)):
             print("%d. %s" % (i + 1, game_list[i]))
-        user_choice_game = int(input("선택해주세요(exit를 입력하면 종료됩니다.): "))
-        if str(user_choice_game) == "exit":
+        user_choice_game = input("선택해주세요(exit를 입력하면 종료됩니다.): ")
+        if user_choice_game == "exit":
             break
+        else:
+            user_choice_game = int(user_choice_game)
 
     if user_choice_game == 1:
         sum_dice_game_win += sum_dice_game(sum_dice_game_win)
@@ -82,3 +135,6 @@ while True:
     elif user_choice_game == "exit":
         print("사죵자는 주사위 합계 게임을 %d번, 홀짝게임을 %d번 이겼습니다." % (sum_dice_game_win, odd_even_game_win))
         print("게임을 종료합니다.")
+        break
+    # 종료하기전 초기화
+    user_choice_game = 0
