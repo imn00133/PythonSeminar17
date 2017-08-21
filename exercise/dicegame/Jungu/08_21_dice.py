@@ -1,39 +1,39 @@
 import random
-side = int(input("면이 몇개? \n"))
-while side==4 or side==6 or side==8 or side==12 or side==20:
-    Userluck=random.randint(1,side)
-    Comluck=random.randint(1,side)
-    print("당신의 숫자는 %d 입니다." %Userluck)
-    print("컴퓨터의 숫자는 %d 입니다." %Comluck)
-    win=0
-    trial=0
-    if Userluck>Comluck:
-        again=int(input("이겼습니다! 다시 하시겠습니까? 1:yes, 2:no \n"))
-        win+=1
-        trial+=1
-        if again==1:
-            print(" %d번 시도하여 %d번 승리하셨습니다!" %(trial,win))
-            continue
-        if again==2:
-            print(" %d번 시도하여 %d번 승리하셨습니다! \n 수고하셨습니다." % (trial, win))
-            break
-    elif Userluck==Comluck:
-        again=int(input(("비겼습니다! 다시 하시겠습니까? 1:yes, 2:no \n")))
-        trial+=1
-        if again==1:
-            print(" %d번 시도하여 %d번 승리하셨습니다!" %(trial,win))
-            continue
-        if again==2:
-            print(" %d번 시도하여 %d번 승리하셨습니다! \n 수고하셨습니다." % (trial, win))
-            break
-    else:
-        again=int(input("졌습니다! 다시 하시겠습니까? 1:yes, 2:no \n"))
-        trial+=1
-        if again==1:
-            print(" %d번 시도하여 %d번 승리하셨습니다!" % (trial, win))
-            continue
-        if again==2:
-            print(" %d번 시도하여 %d번 승리하셨습니다! \n 수고하셨습니다." % (trial, win))
-            break
-if side!=4 or side!=6 or side!=8 or side!=12 or side!=20:
-    print("정다면체의 면 수가 될 수 있도록 설정하세요")
+game=0
+win=0
+regame=1
+while 1:	
+	user_number=int(input("정다면체의 면의 개수를 입력하시오: "))
+	dice=int(input("주사위의 개수를 입력하시오: "))
+	sum_of_dice=0
+	sum_of_dice_computer=0
+	if user_number==4 or user_number==6 or user_number==8 or user_number==12 or user_number==20:
+		while regame:
+			sum_of_dice=0
+			sum_of_dice_computer=0
+			game=game+1
+			for j in range(1,dice+1):	
+				dice_number=[]
+				for i in range(1,user_number+1):
+					dice_number=dice_number+[i]
+				random_number=random.choice(dice_number)
+				random_number_computer=random.choice(dice_number)
+				print("사용자의 %s번쨰 주사위의 눈금: %s" %(j,random_number))
+				print("컴퓨터의 %s번째 주사위의 눈금: %s" %(j,random_number_computer))
+				sum_of_dice=sum_of_dice+random_number
+				sum_of_dice_computer=sum_of_dice_computer+random_number_computer
+				if j==dice:
+					print("사용자의 주사위 눈금의 총 합: %s" %sum_of_dice)
+					print("컴퓨터의 주사위 눈금의 총 합: %s" %sum_of_dice_computer)
+					if sum_of_dice>sum_of_dice_computer:
+						win=win+1
+						print("사용자가 이겼습니다.")
+						print("현재까지 %s판 중 %s판 이겼습니다."  %(game,win))
+					elif sum_of_dice==sum_of_dice_computer:
+						print("비겼습니다.")
+					else:
+						print("컴퓨터가 이겼습니다.")
+			regame= int(input("다시 하시겠습니까?(1=예,0=아니오): "))
+				
+	else:
+		print("다시 입력하시오")
