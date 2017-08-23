@@ -10,11 +10,11 @@
 >3. 다양한 형태로 변환이 가능하다.
 >4. 텍스트로 저장되어 용량이 적고 버전관리시스템을 사용할 수 있다.
 
-###단점
+### 단점
 >1. 표준이 없다.
 >2. 모든 HTML을 대체하지 못한다.
 
-##사용법(문법)
+## 사용법(문법)
 ### 1. 줄바꿈  
 더블스페이스 후 엔터를 넣어 사용한다. 단, 더블스페이스 이상도 인식한다.
 > 안녕하세요.  
@@ -28,20 +28,20 @@
 ### 3. 제목(Headers)
   * 큰 제목  
     Header  
-    ======  
+    \======  
     이 때 '='는 한 개 이상이나 명확한 구분을 위해 여러 개를 붙이는 것을 권장한다.
     >Header
     > ==
     
   * 작은 제목(부제목)   
     Header  
-    \----------  
+    \-------  
     이 때, '-'는 한 개 이상이다.
 
     >Header
     >------
     
-  * 글머리: 1-6까지 지원
+  * 글머리: 1-6까지 지원  
     \# H1  
     \## H2  
     \### H3  
@@ -158,17 +158,17 @@ _Italic_
 ### 11. 링크
 * 인라인 링크  
 글을 누르면 바로 넘어가는 링크  
-\[Git hub](www.github.com) 
+\[Git hub](www.github.com)  
 [Git hub](www.github.com)
 
 * 참조링크  
-참조를 통해서 링크를 거는 방식
-[link keyword][id]
+참조를 통해서 링크를 거는 방식  
+[link keyword][id]  
 [id]: http주소
 
 * 자동연결
 주소를 보여주면서 연결하도록 만든다.
-\<http://www.github.com>
+\<http://www.github.com>  
 <http://www.github.com>
 
 ### 12. 이미지
@@ -176,9 +176,7 @@ Alt text: 설명, 주소: 사진주소, 사진 이름: 사진위에 커서를 �
 \!\[Alt text](주소, "사진 이름")
 
 ## 파이참에서 사용
-파이참에서는 마지막에 더블스페이스가 들어간 것을 자동으로 지운다. 따라서 줄바꿈을 놔두기 위해서는 plug-in을 설치해야 된다.  
-md파일을 만든 후에 파이참을 재부팅하면 자동으로 plug-in을 설치할지 물어본다. 또는 Setting-Editor-plugin에서 설치할 수도 있다.  
-자동으로 설치할경우 Markdown Navigator와 Markdown support가 설치되며 원하는 것을 사용하면 된다. Navigator는 무겁지만 여러 편의성이 있고, support는 가볍다.
+파이참에서는 마지막에 더블스페이스가 들어간 것을 자동으로 지운다. 따라서 줄바꿈을 놔두기 위해서는 plug-in을 설치해야 된다. md파일을 만든 후에 파이참을 재부팅하면 자동으로 plug-in을 설치할지 물어본다. 또는 Setting-Editor-plugin에서 설치할 수도 있다. 자동으로 설치할경우 Markdown Navigator와 Markdown support가 설치되며 원하는 것을 사용하면 된다. Navigator는 무겁지만 여러 편의성이 있고, support는 가볍다.
 
 ## Reference
 쓰리래빗츠: <https://www.3rabbitz.com/markdown_guide>  
