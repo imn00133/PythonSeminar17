@@ -32,6 +32,9 @@ python 3.6.2의 documentation중 Built-in Functions를 확인하였다.
 그 함수를 확인하니 cp494를 반환하고 있는 것을 볼 수 있었다. 여기서 문제가 발생했다. 
 locale.getpreferredencoding 함수: <https://docs.python.org/3/library/locale.html#locale.getpreferredencoding>  
 
+## cp494로 되어있는 파일내 문자열을 읽었을 때 문제점이 있는지 확인
+python3에서 cp494로 되어있는 문자열을 읽고, 그 읽은 문자열을 비교하거나 검색하였을 때, 문제가 있는지 확인하였다. 문자를 찾거나 문자열을 비교하였을 때, 문제는 없다.
+
 ## 결론
 파일 입출력을 할 때는 open("file_name", "방식", encoding="")을 사용하는게 좋고, 어떤 파일이 들어올지 모른다면, locale을 통해 기본 값을 받은 후에 utf-8을 확인하는 방식등을 사용해야 될 것으로 보인다.
 
