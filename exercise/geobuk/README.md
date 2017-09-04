@@ -36,3 +36,8 @@ turtle.distance(x,y) x,y의 좌표와 현재 위치 사이의 거리를 반환�
 turtle.pendown() 펜을 내린다.  
 turtle.penup() 펜을 올린다.  
 turtle.isdown() 펜이 내려와있으면 True, 올라가있으면 False를 반환한다.  
+
+PyCharm에서 그래픽이 종료될 때, 맨 마지막에 turtle.screen.mainloop()를 넣어주면 된다.
+
+python reference https://docs.python.org/3/library/turtle.html
+자주 사용하는 메소드(한글) https://blog.naver.com/javaking75/220740422160
