@@ -116,6 +116,13 @@ def odd_even_dice_game():
     return game_win
 
 
+def sub_dice_game():
+    game_win = 0
+    exec_flag = "yes"
+    while exec_flag != "no":
+        
+    return game_win
+
 # dice_face 및 dice_num는 전역변수로 사용된다. dice_make가 언제든 사용될 수 있기 때문에 어쩔 수 없다.
 # dice_num을 전역변수로 사용하지 않게 했었어야 되었는데... 잘못 만들었다.
 # 주사위 다른 것을 여러 개 만든다면 어떤 일들이... 답은 객체지향인가보다.
@@ -125,9 +132,9 @@ dice_face = dice_num = 0
 dice_make()
 
 # 프로그램의 시작
-game_list = ["주사위 합계 게임", "주사위 홀짝 게임"]
+game_list = ["주사위 합계 게임", "주사위 홀짝 게임", "주사위 뺄샘 게임"]
 user_choice_game = 0
-sum_dice_game_win = odd_even_game_win = 0
+sum_dice_game_win = odd_even_game_win = sub_dice_game_win = 0
 while True:
     while user_choice_game <= 0 or user_choice_game > len(game_list):
         print("주사위 게임 프로그램을 시작합니다.")
@@ -144,6 +151,8 @@ while True:
         sum_dice_game_win += sum_dice_game()
     elif user_choice_game == 2:
         odd_even_game_win += odd_even_dice_game()
+    elif user_choice_game == 3:
+        sub_dice_game_win += sub_dice_game()
     elif user_choice_game == "exit":
         print("사죵자는 주사위 합계 게임을 %d번, 홀짝게임을 %d번 이겼습니다." % (sum_dice_game_win, odd_even_game_win))
         print("게임을 종료합니다.")
