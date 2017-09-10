@@ -200,3 +200,6 @@ while True:
         break
     # 종료하기전 초기화
     user_choice_game = 0
+
+# 리스트 만들고 변수 in []으로 간단하게 파악할 수 있음 - 세훈
+# sum(리스트) 리스트 안을 더해준다.
