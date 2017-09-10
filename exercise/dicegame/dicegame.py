@@ -171,7 +171,7 @@ dice_face = dice_num = 0
 dice_make()
 
 # 프로그램의 시작
-game_list = ["주사위 합계 게임", "주사위 홀짝 게임", "주사위 뺄샘 게임"]
+game_list = ["주사위 합계 게임", "주사위 홀짝 게임", "주사위 뺄셈 게임"]
 user_choice_game = 0
 sum_dice_game_win = odd_even_game_win = sub_dice_game_win = 0
 while True:
@@ -194,7 +194,8 @@ while True:
     elif user_choice_game == 3:
         sub_dice_game_win += sub_dice_game()
     elif user_choice_game == "exit":
-        print("사죵자는 주사위 합계 게임을 %d번, 홀짝게임을 %d번 이겼습니다." % (sum_dice_game_win, odd_even_game_win))
+        print("사용자는 주사위 합계 게임을 %d번, 홀짝게임을 %d번, 뺄셈게임을 %d번 이겼습니다."
+              % (sum_dice_game_win, odd_even_game_win, sub_dice_game_win))
         print("게임을 종료합니다.")
         break
     # 종료하기전 초기화
