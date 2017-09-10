@@ -23,6 +23,8 @@ while True:
     money = input("돈을 넣으세요: ")
     if money == "admin":
         admin_mode()
+    else:
+        break
 
 # 사전 사용해보기
 coffee_dict = {1: "블랙커피", 2: "밀크커피", 3: "고급커피", 4: "거스름돈"}
