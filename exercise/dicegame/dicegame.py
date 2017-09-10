@@ -58,7 +58,7 @@ def end_flag(flag, game_win):
     else:
         print("사용자가 졌습니다.")
     while True:
-        exec_flag = input("다시하시겠습니까(yes/no/change)? ")
+        exec_flag = input("다시 하시겠습니까(yes/no/change)? ")
         if exec_flag == "yes" or exec_flag == "no":
             return exec_flag
         elif exec_flag == "change":
@@ -117,10 +117,49 @@ def odd_even_dice_game():
 
 
 def sub_dice_game():
+    """
+
+    :return:
+    """
     game_win = 0
     exec_flag = "yes"
     while exec_flag != "no":
-        
+        # 점수 설정
+        user_total_score = 0
+        while user_total_score <= 0:
+            user_total_score = int(input("초기 점수를 입력해주세요: "))
+        comp_total_score = user_total_score
+
+        # 본 게임
+        user_flag = "yes"
+        while user_total_score > 0 and comp_total_score > 0 and user_flag == "yes":
+            user_flag = ""
+            comp_score = dice_sum("컴퓨터")
+            print("")
+            user_score = dice_sum("사용자")
+            print("")
+            if comp_score > user_score:
+                print("컴퓨터가 이겼습니다.")
+                user_total_score -= comp_score
+            elif comp_score < user_score:
+                print("사용자가 이겼습니다.")
+                comp_total_score -= user_score
+            else:
+                print("비겼습니다.")
+            print("현재 점수는 컴퓨터: %d, 사용자: %d 입니다." % (comp_total_score, user_total_score))
+            while user_flag != "yes" and user_flag != "no" and user_total_score > 0 and comp_total_score > 0:
+                user_flag = input("다시 던지시겠습니까(yes/no/change): ")
+                if user_flag == "change":
+                    dice_make()
+
+        if comp_total_score < user_total_score:
+            flag = "win"
+            game_win += 1
+        elif comp_total_score == user_total_score:
+            flag = "draw"
+        else:
+            flag = "lose"
+        exec_flag = end_flag(flag, game_win)
     return game_win
 
 # dice_face 및 dice_num는 전역변수로 사용된다. dice_make가 언제든 사용될 수 있기 때문에 어쩔 수 없다.
@@ -147,6 +186,7 @@ while True:
         else:
             user_choice_game = int(user_choice_game)
 
+    # 게임 선택 창
     if user_choice_game == 1:
         sum_dice_game_win += sum_dice_game()
     elif user_choice_game == 2:
