@@ -1,0 +1,4 @@
+numpy 설치방법
+패키지를 다운받아서 설치하는 방법도 있으나, 명령프롬프트에서 "python -m pip install numpy"를 입력하면 numpy가 설치된다.
+import numpy
+numpy.random.rand(4,4)를 입력하면 4,4 행렬에 rand되어 나온다.
