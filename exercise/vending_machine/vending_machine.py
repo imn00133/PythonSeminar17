@@ -10,7 +10,7 @@ def read_stock():
     return coffee_list
 
 
-def write_stock(coffee_list):
+def write_stock():
     coffee_stock = open("coffee_stock.txt", 'w', encoding="utf-8")
     for line_data in coffee_list:
         for data in line_data:
@@ -19,23 +19,42 @@ def write_stock(coffee_list):
     coffee_stock.close()
 
 
-def add_admin_goods_num():
-    while True:
-        goods_number = input("추가할 개수를 입력하세요: ")
-        if goods_number < 0:
-            continue
+def add_admin_goods_num(add_coffee):
+    goods_number = -1
+    while goods_number < 0:
+        goods_number = int(input("추가할 개수를 입력하세요: "))
+    coffee_list[add_coffee][len(coffee_list[0])-1] = str(int(coffee_list[add_coffee][len(coffee_list[0])-1]) + goods_number)
+
+
+def add_admin_goods():
+    goods_name = input("추가할 물품을 입력하세요.: ")
+    goods_value = input("물품의 가격을 입력하세요.: ")
+    goods_number = input("물품의 개수를 입력하세요.: ")
+    coffee_list.append([str(len(coffee_list)), goods_name, goods_value, goods_number])
 
 
 def admin_mode():
-    while True:
-        add_coffee = 0
-        while add_coffee in coffee_dict:
-            for i in range(1, len(coffee_list)):
-                print("%s. %s: %s개" % (coffee_list[i][0], coffee_list[i][1], coffee_list[i][3]))
-            add_coffee = int(input("추가할 커피를 선택하세요.(exit는 종료): "))
-        if add_coffee == "exit":
+    add_coffee = 0
+    while add_coffee != "exit":
+        for i in range(1, len(coffee_list)):
+            print("%s. %s: %s개" % (coffee_list[i][0], coffee_list[i][1], coffee_list[i][3]))
+        print("="*30)
+        choice = int(input("1. 물품의 개수를 추가\n2. 물품을 추가\n3. 종료\n선택해주세요.: "))
+        while choice <= 0 or choice > 3:
+            choice = int(input("1. 물품의 개수를 추가\n2. 물품을 추가\n3를 입력하면 종료됩니다.: "))
+        if choice == 1:
+            while not(add_coffee in coffee_dict):
+                for i in range(1, len(coffee_list)):
+                    print("%s. %s: %s개" % (coffee_list[i][0], coffee_list[i][1], coffee_list[i][3]))
+                add_coffee = int(input("추가할 커피를 선택하세요.(exit는 종료): "))
+            add_admin_goods_num(add_coffee)
+            add_coffee = 0
+            write_stock()
+        elif choice == 2:
+            add_admin_goods()
+            write_stock()
+        elif choice == 3:
             return
-        add_admin_goods_num()
 
 
 # 프로그램의 시작, 초기화
@@ -50,7 +69,7 @@ coffee_dict = {}
 coffee_value = {}
 for line in coffee_list:
     coffee_dict[int(line[0])] = line[1]
-    coffee_value[line[1]] = line[2]
+    coffee_value[line[1]] = int(line[2])
 coffee_list.insert(0, coffee_temp)
 
 while True:
@@ -58,6 +77,7 @@ while True:
     if money == "admin":
         admin_mode()
     else:
+        money = int(money)
         break
 
 # 100원 이하는 무조건 거스름 돈으로 돌려주면서 끝낸다.
@@ -74,7 +94,7 @@ while money > 100:
     user_choice = 0
     while user_choice <= 0 or user_choice > len(coffee_dict):
         user_choice = int(input("마실 커피를 골라주세요: "))
-    if user_choice == 4:
+    if user_choice == len(coffee_dict):
         break
     money -= coffee_value[coffee_dict[user_choice]]
     print("%d원이 남았습니다." % money)
