@@ -162,6 +162,7 @@ def sub_dice_game():
         exec_flag = end_flag(flag, game_win)
     return game_win
 
+
 # dice_face 및 dice_num는 전역변수로 사용된다. dice_make가 언제든 사용될 수 있기 때문에 어쩔 수 없다.
 # dice_num을 전역변수로 사용하지 않게 했었어야 되었는데... 잘못 만들었다.
 # 주사위 다른 것을 여러 개 만든다면 어떤 일들이... 답은 객체지향인가보다.
