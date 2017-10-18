@@ -60,17 +60,15 @@ def admin_mode():
 # 프로그램의 시작, 초기화
 coffee_list = read_stock()
 
-# exception처리를 아직 배우지 않았기 때문에 dictionary에서 오류날 부분인 맨 처음 줄을 넣고 삭제한다.
-coffee_temp = coffee_list[0]
-del coffee_list[0]
-
-# 사전 사용해보기
+# 첫번째 행의 오류 무시
 coffee_dict = {}
 coffee_value = {}
 for line in coffee_list:
-    coffee_dict[int(line[0])] = line[1]
-    coffee_value[line[1]] = int(line[2])
-coffee_list.insert(0, coffee_temp)
+    try:
+        coffee_dict[int(line[0])] = line[1]
+        coffee_value[line[1]] = int(line[2])
+    except:
+        pass
 
 while True:
     money = input("돈을 넣으세요: ")
