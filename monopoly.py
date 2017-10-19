@@ -7,4 +7,4 @@ for x in range(40):
 
 while(1):
     random.randrange(1,7)
-    http: // codingdojang.com / scode / 550  # answer-filter-area
+    http://codingdojang.com/scode/550  # answer-filter-area
