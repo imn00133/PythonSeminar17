@@ -1,5 +1,16 @@
 def read_stock():
-    coffee_stock = open("coffee_stock.txt", 'r', encoding="utf-8")
+    """
+    txt파일을 읽어 coffee_list를 반환해준다.
+    :return: coffee_list는 커피번호, 제품명, 가격, 제고로 이뤄진 2차원 배열이다.
+             error는 오류가 있을 경우 오류메세지와 함께 반환되는 값이다.
+    """
+    try:
+        error = ""
+        coffee_stock = open("coffee_stock.txt", 'r', encoding="utf-8")
+    except FileNotFoundError as error:
+        write_stock([])
+        coffee_stock = open("coffee_stock.txt", 'r', encoding="utf-8")
+        print("파일이 없습니다.")
     coffee_list = []
     while True:
         line = coffee_stock.readline()
@@ -7,10 +18,17 @@ def read_stock():
             break
         coffee_list.append(line.strip().split())
     coffee_stock.close()
-    return coffee_list
+    return coffee_list, error
 
 
-def write_stock():
+def write_stock(coffee_list):
+    """
+    파일에 coffee_list를 쓴다.
+    :param coffee_list를 받는다.
+    """
+    # coffee_list가 비어있을 경우, 초기화를 사용한다.
+    if not coffee_list:
+        coffee_list = [["번호", "제품명", "가격", "재고"]]
     coffee_stock = open("coffee_stock.txt", 'w', encoding="utf-8")
     for line_data in coffee_list:
         for data in line_data:
@@ -20,6 +38,10 @@ def write_stock():
 
 
 def add_admin_goods_num(add_coffee):
+    """
+    물품의 개수를 변경한다.
+    :param add_coffee: 변경한 커피의 번호
+    """
     goods_number = -1
     while goods_number < 0:
         goods_number = int(input("추가할 개수를 입력하세요: "))
@@ -27,40 +49,60 @@ def add_admin_goods_num(add_coffee):
 
 
 def add_admin_goods():
+    """
+    물품을 추가한다.
+    """
     goods_name = input("추가할 물품을 입력하세요.: ")
     goods_value = input("물품의 가격을 입력하세요.: ")
     goods_number = input("물품의 개수를 입력하세요.: ")
     coffee_list.append([str(len(coffee_list)), goods_name, goods_value, goods_number])
 
 
+def del_admin_goods():
+    pass
+
+
 def admin_mode():
-    add_coffee = 0
-    while add_coffee != "exit":
+    coffee_num = 0
+    while coffee_num != "exit":
         for i in range(1, len(coffee_list)):
             print("%s. %s: %s개" % (coffee_list[i][0], coffee_list[i][1], coffee_list[i][3]))
         print("="*30)
-        choice = int(input("1. 물품의 개수를 추가\n2. 물품을 추가\n3. 종료\n선택해주세요.: "))
-        while choice <= 0 or choice > 3:
-            choice = int(input("1. 물품의 개수를 추가\n2. 물품을 추가\n3를 입력하면 종료됩니다.: "))
+        choice = int(input("1. 물품의 개수를 추가\n2. 물품을 추가\n3. 물품을 삭제\n4. 종료\n선택해주세요.: "))
+        while choice <= 0 or choice > 4:
+            choice = int(input("1. 물품의 개수를 추가\n2. 물품을 추가\n3. 물품을 삭제\n4를 입력하면 종료됩니다.: "))
         if choice == 1:
-            while not(add_coffee in coffee_dict):
+            while not(coffee_num in coffee_dict):
                 for i in range(1, len(coffee_list)):
                     print("%s. %s: %s개" % (coffee_list[i][0], coffee_list[i][1], coffee_list[i][3]))
-                add_coffee = int(input("추가할 커피를 선택하세요.(exit는 종료): "))
-            add_admin_goods_num(add_coffee)
-            add_coffee = 0
-            write_stock()
+                coffee_num = int(input("추가할 커피를 선택하세요.(exit는 종료): "))
+            add_admin_goods_num(coffee_num)
+            coffee_num = 0
+            write_stock(coffee_list)
         elif choice == 2:
+            for i in range(1, len(coffee_list)):
+                print("%s. %s: %s개" % (coffee_list[i][0], coffee_list[i][1], coffee_list[i][3]))
             add_admin_goods()
-            write_stock()
-        elif choice == 3:
+            write_stock(coffee_list)
+        elif choice ==3:
+            while not(coffee_num in coffee_dict):
+                for i in range(1, len(coffee_list)):
+                    print("%s. %s: %s개" % (coffee_list[i][0], coffee_list[i][1], coffee_list[i][3]))
+                coffee_num = int(input("추가할 커피를 선택하세요.(exit는 종료): "))
+            add_admin_goods_num(coffee_num)
+            coffee_num = 0
+            del_admin_goods()
+            write_stock(coffee_list)
+        elif choice == 4:
             return
 
 
 # 프로그램의 시작, 초기화
-coffee_list = read_stock()
+coffee_list, file_error = read_stock()
 
 # 첫번째 행의 오류 무시
+# coffee_dict: key=coffee_num, value=coffee_name
+# coffee_value: key=coffee_name, value=coffee_value
 coffee_dict = {}
 coffee_value = {}
 for line in coffee_list:
@@ -69,6 +111,10 @@ for line in coffee_list:
         coffee_value[line[1]] = int(line[2])
     except:
         pass
+
+if file_error != "":
+    print("재고가 초기화되어 admin에 접속합니다.")
+    admin_mode()
 
 while True:
     money = input("돈을 넣으세요: ")
