@@ -9,7 +9,7 @@ WHITE = (255, 255, 255)
 GREEN = (  0, 255,   0)
 BLUE  = (  0,   0, 128)
 
-fontObj = pygame.font.Font('freesansbold.ttf', 32)
+fontObj = pygame.font.Font('c:\\Windows\\fonts\\gulim.ttc', 32)
 textSurfaceObj = fontObj.render('Hello world!', True, GREEN, BLUE)
 textRectObj = textSurfaceObj.get_rect()
 textRectObj.center = (200, 150)
@@ -22,3 +22,4 @@ while True: # main game loop
             pygame.quit()
             sys.exit()
     pygame.display.update()
+
