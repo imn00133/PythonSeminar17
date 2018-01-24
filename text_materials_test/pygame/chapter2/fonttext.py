@@ -1,5 +1,6 @@
 import pygame, sys
 from pygame.locals import *
+import os
 
 pygame.init()
 DISPLAYSURF = pygame.display.set_mode((400, 300))
@@ -9,7 +10,7 @@ WHITE = (255, 255, 255)
 GREEN = (  0, 255,   0)
 BLUE  = (  0,   0, 128)
 
-fontObj = pygame.font.Font('c:\\Windows\\fonts\\gulim.ttc', 32)
+fontObj = pygame.font.Font(os.environ['systemroot']+'\\fonts\\gulim.ttc', 32)
 textSurfaceObj = fontObj.render('Hello world!', True, GREEN, BLUE)
 textRectObj = textSurfaceObj.get_rect()
 textRectObj.center = (200, 150)
