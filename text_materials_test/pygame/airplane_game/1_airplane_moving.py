@@ -5,16 +5,18 @@ import pygame
 import sys
 from pygame.locals import *
 
-FPS = 30 # 초당 프레임 수
-WINDOWWIDTH = 1024
-WINDOWHEIGHT = 512
+# 초당 프레임 수
+FPS = 30
 
-fpsClock = pygame.time.Clock()
+# 윈도우 크기
+WINDOWWIDTH = 1280
+WINDOWHEIGHT = 640
 
-# 윈도우 설정하기
-DISPLAYSURF = pygame.display.set_mode((400, 300), 0, 32)
-pygame.display.set_caption('Animation')
+# DISPLAY Surface 설정하기
+DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
+pygame.display.set_caption('PyFlying')
 
+# 색
 WHITE = (255, 255, 255)
 
 
@@ -22,18 +24,17 @@ def main():
     global FPSCLOCK, DISPLAYSURF
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
-    DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
 
-    pygame.display.update()
-    fpsClock.tick(FPS)
+    while True: # 게임 루프
+        DISPLAYSURF.fill(WHITE)
 
-
-while True: # 게임 루프
-    DISPLAYSURF.fill(WHITE)
-
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-            sys.exit()
+        for event in pygame.event.get():
+            if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
+                pygame.quit()
+                sys.exit()
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
 
 
+if __name__ == '__main__':
+    main()
