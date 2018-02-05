@@ -27,12 +27,24 @@ WHITE = (255, 255, 255)
 
 
 def init_enemy(image):
+    """
+    적의 초기 위치를 반환해준다.
+    :param image: surface
+    :return: x, y
+    """
     x = WINDOWWIDTH
     y = random.randrange(0, WINDOWHEIGHT - image.get_height())
     return x, y
 
 
 def draw_object(image, x, y):
+    """
+    surface를 display surface에 그려준다.
+    :param image: surface
+    :param x: x위치
+    :param y: y위치
+    :return: None
+    """
     global DISPLAYSURF
     DISPLAYSURF.blit(image, (x, y))
 
@@ -148,6 +160,10 @@ def main():
 
 
 def game_init():
+    """
+    게임에 필요한 각종 값을 초기화 한다.
+    :return: None
+    """
     global FPSCLOCK, DISPLAYSURF
     global IMAGESDICT
     FPSCLOCK = pygame.time.Clock()
