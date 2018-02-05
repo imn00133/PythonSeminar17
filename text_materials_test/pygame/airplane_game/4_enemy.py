@@ -21,12 +21,12 @@ BACKGROUNDSPEED = 2
 BATSPEED = 7
 FIREBALLSPEED = 15
 # 박쥐 재시작 시간
-BATTIME = 8
+BATTIME = 3
 # 색
 WHITE = (255, 255, 255)
 
 
-def init_enemy(image):
+def init_enemy_pos(image):
     """
     적의 초기 위치를 반환해준다.
     :param image: surface
@@ -71,16 +71,16 @@ def main():
     other_background_x = BACKGROUNDWIDTH
 
     # 박쥐 초기 위치
-    bat_x, bat_y = init_enemy(IMAGESDICT["bat"])
+    bat_x, bat_y = init_enemy_pos(IMAGESDICT["bat"])
 
     # 박쥐 초기화 시간변수
     bat_remove_time = 0
 
     # 파이어볼 초기화 및 초기 위치
-    # 1/7확률로 fireball이 날아간다.
+    # 2/7확률로 fireball이 날아간다.
     fireball_choice = random.randint(1, 7)
     if fireball_choice == 1 or fireball_choice == 2:
-        fireball_x, fireball_y = init_enemy(IMAGESDICT["fireball%s" % fireball_choice])
+        fireball_x, fireball_y = init_enemy_pos(IMAGESDICT["fireball%s" % fireball_choice])
     else:
         fireball_x, fireball_y = WINDOWWIDTH, 0
 
@@ -132,10 +132,11 @@ def main():
         draw_object(IMAGESDICT["background"], other_background_x, 0)
 
         # 박쥐 위치 설정
-        bat_x -= BATSPEED
-        if bat_x <= 0 and BATTIME <= time.time()-bat_remove_time:
+        if BATTIME <= time.time()-bat_remove_time:
+            bat_x -= BATSPEED
+        if bat_x <= 0:
             bat_remove_time = time.time()
-            bat_x, bat_y = init_enemy(IMAGESDICT["bat"])
+            bat_x, bat_y = init_enemy_pos(IMAGESDICT["bat"])
 
         # fireball 위치 설정
         if fireball_choice == 1 or fireball_choice == 2:
@@ -146,7 +147,7 @@ def main():
         if fireball_x <= 0:
             fireball_choice = random.randint(1, 7)
             if fireball_choice == 1 or fireball_choice == 2:
-                fireball_x, fireball_y = init_enemy(IMAGESDICT["fireball%s" % fireball_choice])
+                fireball_x, fireball_y = init_enemy_pos(IMAGESDICT["fireball%s" % fireball_choice])
             else:
                 fireball_x, fireball_y = WINDOWWIDTH, 0
 
