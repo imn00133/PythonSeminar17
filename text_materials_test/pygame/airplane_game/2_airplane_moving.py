@@ -50,7 +50,7 @@ def main():
                     airplane_y_change = -5
                 elif event.key == K_DOWN:
                     airplane_y_change = 5
-                elif event.key == K_RIGHT:
+                if event.key == K_RIGHT:
                     airplane_x_change = 5
                 elif event.key == K_LEFT:
                     airplane_x_change = -5
