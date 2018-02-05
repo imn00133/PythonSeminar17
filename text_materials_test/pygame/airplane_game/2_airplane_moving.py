@@ -5,50 +5,86 @@ import pygame
 import sys
 from pygame.locals import *
 
+# 상수영역
 # 초당 프레임 수
 FPS = 30
-
 # 윈도우 크기
 WINDOWWIDTH = 1280
 WINDOWHEIGHT = 640
-
+# 배경 크기
+BACKGROUNDWIDTH = 1280
+BACKGROUNDHEIGHT = 640
 # 색
 WHITE = (255, 255, 255)
 
 
+def draw_object(image, x, y):
+    global DISPLAYSURF
+    DISPLAYSURF.blit(image, (x, y))
+
+
 def main():
     global FPSCLOCK, DISPLAYSURF
-    global AIRCRAFT
+    global AIRPLANE
 
     # 비행기 왼쪽 초기 위치
-    airplaneX = WINDOWWIDTH * 0.05
-    airplaneY = WINDOWHEIGHT * 0.8
-    airplaneY_change = 0
+    airplane_x = WINDOWWIDTH * 0.05
+    airplane_y = WINDOWHEIGHT * 0.8
+    airplane_y_change = 0
+    airplane_x_change = 0
 
+    # 비행기 크기
+    AIRPLANEWIDTH = AIRPLANE.get_width()
+    AIRPLANEHEIGHT = AIRPLANE.get_height()
+
+    # game loop
     while True:
+        # event handle
         for event in pygame.event.get():
+            # 종료
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
             if event.type == KEYDOWN:
                 if event.key == K_UP:
-                    airplaneY_change = -5
+                    airplane_y_change = -5
                 elif event.key == K_DOWN:
-                    airplaneY_change = 5
+                    airplane_y_change = 5
+                elif event.key == K_RIGHT:
+                    airplane_x_change = 5
+                elif event.key == K_LEFT:
+                    airplane_x_change = -5
             if event.type == KEYUP:
                 if event.key == K_UP or event.key == K_DOWN:
-                    airplaneY_change = 0
+                    airplane_y_change = 0
+                elif event.key == K_RIGHT or event.key == K_LEFT:
+                    airplane_x_change = 0
 
-        airplaneY += airplaneY_change
+        # event에 따른 비행기 위치 변경 및 제한
+        airplane_y += airplane_y_change
+        if airplane_y < 0:
+            airplane_y = 0
+        elif airplane_y > WINDOWHEIGHT - AIRPLANEHEIGHT:
+            airplane_y = WINDOWHEIGHT - AIRPLANEHEIGHT
+
+        airplane_x += airplane_x_change
+        if airplane_x < 0:
+            airplane_x = 0
+        elif airplane_x > WINDOWWIDTH - AIRPLANEWIDTH:
+            airplane_x = WINDOWWIDTH - AIRPLANEWIDTH
+
+        # 배경 그리기
         DISPLAYSURF.fill(WHITE)
-        drawobject(AIRCRAFT, airplaneX, airplaneY)
+
+        # 다른 스프라이트 그리기
+        draw_object(AIRPLANE, airplane_x, airplane_y)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
 
-def gameinit():
+def game_init():
     global FPSCLOCK, DISPLAYSURF
-    global AIRCRAFT
+    global AIRPLANE
     FPSCLOCK = pygame.time.Clock()
     pygame.init()
 
@@ -57,15 +93,10 @@ def gameinit():
     pygame.display.set_caption('PyFlying')
 
     # 이미지 받아오기
-    AIRCRAFT = pygame.image.load('images/plane.png')
+    AIRPLANE = pygame.image.load('images/plane.png')
 
     main()
 
 
-def drawobject(image, x, y):
-    global DISPLAYSURF
-    DISPLAYSURF.blit(image, (x, y))
-
-
 if __name__ == '__main__':
-    gameinit()
+    game_init()
