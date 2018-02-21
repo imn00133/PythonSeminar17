@@ -23,23 +23,57 @@ FIREBALLSPEED = 15
 WHITE = (255, 255, 255)
 
 
+class Boom(pygame.sprite.Sprite):
+    """
+    박쥐가 죽었을 때, 폭발이미지
+    """
+    BOOMTIME = 5
+
+    def __init__(self, x, y):
+        global IMAGESDICT
+        super().__init__()
+        self.image = IMAGESDICT["boom"]
+        self.rect = self.image.get_rect()
+        self.rect.left = x
+        self.rect.top = y
+        self.time = 0
+
+    def update(self):
+        self.time += 1
+        if self.time >= self.BOOMTIME:
+            self.kill()
+
+
 class BatEnemy(pygame.sprite.Sprite):
+    """
+    박쥐를 만드는 class
+    batspeed: 이동속도
+    battime: 죽었을 때 기다리는 시간
+    bat_num: 박쥐의 수
+    bat_remove_time: 박쥐가 제거된 시간
+    """
     BATSPEED = 7
     BATTIME = 3
     bat_num = 0
     bat_remove_time = 0
 
     def __init__(self):
+        """
+        마지막에 BatEnemy class의 bat_num의 값을 변경하여 추가한다.
+        """
         global IMAGESDICT
-        pygame.sprite.Sprite.__init__(self)
+        super().__init__()
         self.image = IMAGESDICT["bat"]
         self.rect = self.image.get_rect()
         self.rect.left, self.rect.top = init_enemy_pos(IMAGESDICT["bat"])
         self.rect2 = self.image.get_rect()
         BatEnemy.bat_num += 1
-        print("나옴")
 
     def __del__(self):
+        """
+        BatEnemy.bat_num을 줄인다.
+        :return:
+        """
         BatEnemy.bat_num -= 1
         BatEnemy.bat_remove_time = time.time()
 
@@ -48,10 +82,14 @@ class BatEnemy(pygame.sprite.Sprite):
         if self.rect.left < 0:
             self.kill()
 
+    def position(self):
+        return self.rect.left, self.rect.top
+
 
 class AirplaneBullet(pygame.sprite.Sprite):
     """
     비행기가 발사하는 총알을 저장하는 class
+    기초 속도는 15이다.
     """
     BULLETSPEED = 15
 
@@ -62,14 +100,11 @@ class AirplaneBullet(pygame.sprite.Sprite):
         :param airplane_y: 비행기 y위치
         """
         global IMAGESDICT
-        pygame.sprite.Sprite.__init__(self)
+        super().__init__()
         self.image = IMAGESDICT["bullet"]
         self.rect = self.image.get_rect()
         self.rect.left = airplane_x + IMAGESDICT["airplane"].get_width()
         self.rect.top = airplane_y + IMAGESDICT["airplane"].get_height() / 2
-
-    def __del__(self):
-        print("죽음!!")
 
     def update(self):
         """
@@ -78,10 +113,16 @@ class AirplaneBullet(pygame.sprite.Sprite):
         위치가 벗어나면 삭제한다.
         :return: None
         """
-        self.rect = self.rect.move(self.BULLETSPEED, 0)
+        self.rect = self.rect.move(self.measure_speed(), 0)
         if self.rect.left > WINDOWWIDTH:
             self.kill()
-            print("죽음!")
+
+    def measure_speed(self):
+        """
+        총알의 speed를 넘겨준다.
+        :return: Bulletspeed
+        """
+        return self.BULLETSPEED
 
 
 def init_enemy_pos(image):
@@ -139,6 +180,7 @@ def main():
     # 총알 sprite group
     bullet_group = pygame.sprite.Group()
     bat_group = pygame.sprite.Group()
+    boom_group = pygame.sprite.Group()
     # 전체 sprite group
     sprite_group = pygame.sprite.Group()
 
@@ -194,7 +236,7 @@ def main():
         draw_object(IMAGESDICT["background"], other_background_x, 0)
 
         # 박쥐가 죽으면 재시작 시간 이후 박쥐를 만든다.
-        if BatEnemy.BATTIME <= time.time()-BatEnemy.bat_remove_time\
+        if BatEnemy.BATTIME <= time.time() - BatEnemy.bat_remove_time \
                 and BatEnemy.bat_num <= 0:
             bat_group.add(BatEnemy())
             sprite_group.add(bat_group)
@@ -216,7 +258,13 @@ def main():
         sprite_group.update()
 
         # 충돌을 검사한다.
-        bullet_hit_list = pygame.sprite.groupcollide(bat_group, bullet_group, True, True)
+        bat_collision_dict = pygame.sprite.groupcollide(bullet_group, bat_group, False, False)
+        if bat_collision_dict:
+            for bullet in bat_collision_dict.keys():
+                bat_x, bat_y = bat_collision_dict[bullet][0].position()
+                boom_group.add(Boom(bat_x, bat_y))
+            sprite_group.add(boom_group)
+            pygame.sprite.groupcollide(bullet_group, bat_group, True, True)
 
         # 다른 스프라이트 그리기
         draw_object(IMAGESDICT["airplane"], airplane_x, airplane_y)
@@ -248,7 +296,8 @@ def game_init():
                   "bat": pygame.image.load('images/bat.png'),
                   "fireball1": pygame.image.load('images/fireball.png'),
                   "fireball2": pygame.image.load('images/fireball2.png'),
-                  "bullet": pygame.image.load('images/bullet.png')}
+                  "bullet": pygame.image.load('images/bullet.png'),
+                  "boom": pygame.image.load('images/boom.png')}
 
     # 배경 이미지 게임 윈도우 크기에 맞추기
     assert WINDOWWIDTH <= ORIGINBACKGROUNDWIDTH or WINDOWHEIGHT <= ORIGINBACKGROUNDHEIGHT,\
