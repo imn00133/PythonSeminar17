@@ -34,7 +34,7 @@ class AirplaneBullet(pygame.sprite.Sprite):
 
     def __init__(self, airplane_x, airplane_y):
         """
-        생성자, 이미지는 global로 받아옴으로, 받아올 수 없은 airplane의 x, y위치만 받아온다.
+        생성자, 이미지는 global로 받아옴으로, 게임중에 받아오지 않으면 알 수 없는 airplane의 x, y위치만 받아온다.
         :param airplane_x: 비행기 x위치
         :param airplane_y: 비행기 y위치
         """
