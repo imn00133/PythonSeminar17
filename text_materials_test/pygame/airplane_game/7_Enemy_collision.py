@@ -133,7 +133,6 @@ class BatEnemy(pygame.sprite.Sprite):
         self.image = IMAGESDICT["bat"]
         self.rect = self.image.get_rect()
         self.rect.left, self.rect.top = init_enemy_pos(self.image)
-        self.rect2 = self.image.get_rect()
         BatEnemy.bat_num += 1
 
     def __del__(self):

@@ -66,7 +66,6 @@ class BatEnemy(pygame.sprite.Sprite):
         self.image = IMAGESDICT["bat"]
         self.rect = self.image.get_rect()
         self.rect.left, self.rect.top = init_enemy_pos(IMAGESDICT["bat"])
-        self.rect2 = self.image.get_rect()
         BatEnemy.bat_num += 1
 
     def __del__(self):
@@ -113,16 +112,9 @@ class AirplaneBullet(pygame.sprite.Sprite):
         위치가 벗어나면 삭제한다.
         :return: None
         """
-        self.rect = self.rect.move(self.measure_speed(), 0)
+        self.rect = self.rect.move(self.BULLETSPEED, 0)
         if self.rect.left > WINDOWWIDTH:
             self.kill()
-
-    def measure_speed(self):
-        """
-        총알의 speed를 넘겨준다.
-        :return: Bulletspeed
-        """
-        return self.BULLETSPEED
 
 
 def init_enemy_pos(image):
