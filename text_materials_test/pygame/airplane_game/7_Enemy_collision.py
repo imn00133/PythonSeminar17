@@ -189,17 +189,17 @@ def text_obj(text, font, color):
     return text_surface, text_surface.get_rect()
 
 
-def disp_message(text):
-    large_text = pygame.font.Font('freesansbold.ttf', int(115*WINDOWWIDTH/ORIGINBACKGROUNDWIDTH))
-    text_surf, text_rect = text_obj(text, large_text, RED)
-    text_rect.center = ((WINDOWWIDTH/2), (WINDOWHEIGHT/2))
+def disp_message(sentence, pos_x, pos_y, size, color):
+    text = pygame.font.Font('freesansbold.ttf', int(size*WINDOWWIDTH/ORIGINBACKGROUNDWIDTH))
+    text_surf, text_rect = text_obj(sentence, text, color)
+    text_rect.center = (pos_x, pos_y)
     draw_object(text_surf, text_rect.left, text_rect.top)
-    pygame.display.update()
-    pygame.time.delay(2000)
 
 
 def crash():
-    disp_message("Crashed!")
+    disp_message("Crashed!", WINDOWWIDTH/2, WINDOWHEIGHT/2, 115, RED)
+    pygame.display.update()
+    pygame.time.delay(2000)
     main()
 
 
