@@ -28,6 +28,8 @@ class AirPlane(pygame.sprite.Sprite):
     비행기 class
     player로 사용될 비행기이다.
     """
+    bat_max_catch = 0
+
     def __init__(self):
         global IMAGESDICT
         super().__init__()
@@ -35,6 +37,7 @@ class AirPlane(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.left = WINDOWWIDTH * 0.05
         self.rect.top = WINDOWWIDTH * 0.8
+        self.bat_catch = 0
 
     def change_y(self, value):
         if self.rect.top + value < 0:
@@ -54,6 +57,12 @@ class AirPlane(pygame.sprite.Sprite):
 
     def position(self):
         return self.rect.left, self.rect.top
+
+    def bat_catch_add(self):
+        self.bat_catch += 1
+
+    def bat_catch_return(self):
+        return self.bat_catch
 
 
 class FireBall(pygame.sprite.Sprite):
@@ -122,7 +131,8 @@ class BatEnemy(pygame.sprite.Sprite):
     BATSPEED = 7
     BATTIME = 3
     bat_num = 0
-    bat_remove_time = 0
+    bat_remove_time = []
+    bat_passed = 0
 
     def __init__(self):
         """
@@ -141,11 +151,15 @@ class BatEnemy(pygame.sprite.Sprite):
         :return:
         """
         BatEnemy.bat_num -= 1
-        BatEnemy.bat_remove_time = time.time()
+        BatEnemy.bat_remove_time.append(time.time())
+        if len(BatEnemy.bat_remove_time) >= 2 and \
+            BatEnemy.bat_remove_time[-2]-BatEnemy.bat_remove_time[-1] < 0.1:
+            BatEnemy.bat_remove_time[-1] += 0.5
 
     def update(self):
         self.rect = self.rect.move(-self.BATSPEED, 0)
         if self.rect.left < 0:
+            BatEnemy.bat_passed += 1
             self.kill()
 
     def position(self):
@@ -189,18 +203,40 @@ def text_obj(text, font, color):
     return text_surface, text_surface.get_rect()
 
 
-def disp_message(text):
-    large_text = pygame.font.Font('freesansbold.ttf', int(115*WINDOWWIDTH/ORIGINBACKGROUNDWIDTH))
-    text_surf, text_rect = text_obj(text, large_text, RED)
-    text_rect.center = ((WINDOWWIDTH/2), (WINDOWHEIGHT/2))
+def disp_message(sentence, pos_x, pos_y, size, color, position=""):
+    text = pygame.font.Font('freesansbold.ttf', int(size*WINDOWWIDTH/ORIGINBACKGROUNDWIDTH))
+    text_surf, text_rect = text_obj(sentence, text, color)
+    if position == "center":
+        text_rect.center = (pos_x, pos_y)
+    else:
+        text_rect.left = pos_x
+        text_rect.top = pos_y
     draw_object(text_surf, text_rect.left, text_rect.top)
+
+
+def game_over(bat_captured, text):
+    disp_message(text, WINDOWWIDTH/2, WINDOWHEIGHT/2, 115, RED, "center")
+    BatEnemy.bat_passed = 0
+    del(BatEnemy.bat_remove_time[:])
+    AirPlane.bat_max_catch = max(bat_captured, AirPlane.bat_max_catch)
     pygame.display.update()
     pygame.time.delay(2000)
-
-
-def crash():
-    disp_message("Crashed!")
     main()
+
+
+def draw_bat_score(bat_captured):
+    disp_message("Top Score: %d, Bat captured: %d, Bat passed: %d"
+                 % (AirPlane.bat_max_catch, bat_captured, BatEnemy.bat_passed),
+                 5, 5, 20, WHITE)
+
+
+def recreate_bat():
+    for remove_time in BatEnemy.bat_remove_time:
+        if BatEnemy.BATTIME <= time.time() - remove_time:
+            BatEnemy.bat_remove_time.pop(0)
+            return True
+        else:
+            return False
 
 
 def init_enemy_pos(image):
@@ -253,6 +289,10 @@ def main():
     airplane = AirPlane()
     sprite_group.add(airplane)
 
+    # 박쥐 및 fireball 최대 개수 초기화
+    bat_maximum_num = 1
+    fireball_max_num = 1
+
     # game loop
     while True:
         # event handle
@@ -296,13 +336,17 @@ def main():
         draw_object(IMAGESDICT["background"], other_background_x, 0)
 
         # 박쥐가 죽으면 재시작 시간 이후 박쥐를 만든다.
-        if BatEnemy.BATTIME <= time.time() - BatEnemy.bat_remove_time \
-                and BatEnemy.bat_num <= 0:
-            bat_group.add(BatEnemy())
-            sprite_group.add(bat_group)
+        if bat_maximum_num > BatEnemy.bat_num:
+            if BatEnemy.bat_remove_time:
+                if recreate_bat():
+                    bat_group.add(BatEnemy())
+                    sprite_group.add(bat_group)
+            else:
+                bat_group.add(BatEnemy())
+                sprite_group.add(bat_group)
 
         # fireball 생성
-        if len(fireball_group) <= 0:
+        if len(fireball_group) < fireball_max_num:
             fireball_group.add(FireBall())
             sprite_group.add(fireball_group)
 
@@ -314,19 +358,36 @@ def main():
                 bat_x, bat_y = bat_collision_dict[bullet][0].position()
                 boom_group.add(Boom(bat_x, bat_y))
             sprite_group.add(boom_group)
+            airplane.bat_catch_add()
             pygame.sprite.groupcollide(bullet_group, bat_group, True, True)
+            # 박쥐, fireball의 숫자를 규칙에 따라 늘린다.
+            if airplane.bat_catch_return() % 2 == 0:
+                bat_maximum_num += 1
+            if airplane.bat_catch_return() % 4 == 0:
+                fireball_max_num += 1
+
         # 비행기와 박쥐, 파이어볼의 충돌 검사
-        airplane_crash_bat = pygame.sprite.spritecollide(airplane, bat_group, False)
-        airplane_crash_fire = pygame.sprite.spritecollide(airplane, fireball_group, False)
+        airplane_crash_bat = pygame.sprite.spritecollide(airplane, bat_group, True)
+        airplane_crash_fire = pygame.sprite.spritecollide(airplane, fireball_group, True)
         if airplane_crash_bat or airplane_crash_fire:
             # group이 그냥 초기화되면, 소멸자가 작동하지 않는 것으로 보아, 객체가 남는 것으로 보인다.
             # group을 명시적으로 비워준다.
+            if airplane_crash_bat:
+                # 박쥐와 비행기 충돌시, 리스트로 batsprite를 넘겨줘서 bat객체가 삭제되지 않는 것으로 추정.
+                del airplane_crash_bat[:]
             sprite_group.empty()
             bullet_group.empty()
             bat_group.empty()
             boom_group.empty()
             fireball_group.empty()
-            crash()
+            game_over(airplane.bat_catch_return(), "Crashed!")
+
+        # 박쥐를 잡은 개수와 넘어간 개수를 띄운다.
+        draw_bat_score(airplane.bat_catch_return())
+
+        # 박쥐가 4마리 이상 넘어가면 gameover를 출력한다.
+        if BatEnemy.bat_passed >= 4:
+            game_over(airplane.bat_catch_return(), "Game Over")
 
         # 모든 sprite의 update함수를 실행한다.
         sprite_group.update()
