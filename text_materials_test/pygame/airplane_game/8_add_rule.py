@@ -40,6 +40,11 @@ class AirPlane(pygame.sprite.Sprite):
         self.bat_catch = 0
 
     def change_y(self, value):
+        """
+        비행기의 y값을 바꾼다.
+        :param value: 이동거리
+        :return:
+        """
         if self.rect.top + value < 0:
             self.rect.top = 0
         elif self.rect.top + value > WINDOWHEIGHT - self.image.get_height():
@@ -48,6 +53,11 @@ class AirPlane(pygame.sprite.Sprite):
             self.rect.top += value
 
     def change_x(self, value):
+        """
+        비행기의 x값을 바꾼다.
+        :param value: 이동거리
+        :return:
+        """
         if self.rect.left + value < 0:
             self.rect.left = 0
         elif self.rect.left + value > WINDOWWIDTH - self.image.get_width():
@@ -56,6 +66,10 @@ class AirPlane(pygame.sprite.Sprite):
             self.rect.left += value
 
     def position(self):
+        """
+        위치를 반환해준다.
+        :return: 왼쪽 위 좌표
+        """
         return self.rect.left, self.rect.top
 
     def bat_catch_add(self):
@@ -148,6 +162,7 @@ class BatEnemy(pygame.sprite.Sprite):
     def __del__(self):
         """
         BatEnemy.bat_num을 줄인다.
+        또한, remove_time이 너무 붙지 않도록 짧게 잡혔을 경우 0.5초의 시간적 여유를 준다.
         :return:
         """
         BatEnemy.bat_num -= 1
@@ -157,6 +172,10 @@ class BatEnemy(pygame.sprite.Sprite):
             BatEnemy.bat_remove_time[-1] += 0.5
 
     def update(self):
+        """
+        맨 왼쪽으로 가면 없애면서 pass를 늘린다.
+        :return:
+        """
         self.rect = self.rect.move(-self.BATSPEED, 0)
         if self.rect.left < 0:
             BatEnemy.bat_passed += 1
@@ -199,11 +218,28 @@ class AirplaneBullet(pygame.sprite.Sprite):
 
 
 def text_obj(text, font, color):
+    """
+    text surface를 만들어준다.
+    :param text: 사용할 text
+    :param font: 사용할 폰트 객체
+    :param color: 색
+    :return: surface, rect
+    """
     text_surface = font.render(text, True, color)
     return text_surface, text_surface.get_rect()
 
 
 def disp_message(sentence, pos_x, pos_y, size, color, position=""):
+    """
+    message를 표시해준다.
+    :param sentence: 쓸 문장
+    :param pos_x: x위치
+    :param pos_y: y위치
+    :param size: 크기(window size에 따라 조절됨)
+    :param color: 색
+    :param position: 위치의 기준이 왼쪽 위인지, 중앙인지 정한다. (default 왼쪽위)
+    :return: None
+    """
     text = pygame.font.Font('freesansbold.ttf', int(size*WINDOWWIDTH/ORIGINBACKGROUNDWIDTH))
     text_surf, text_rect = text_obj(sentence, text, color)
     if position == "center":
@@ -215,9 +251,18 @@ def disp_message(sentence, pos_x, pos_y, size, color, position=""):
 
 
 def game_over(bat_captured, text):
+    """
+    게임이 종료되면, 메세지를 출력하고, 값을 초기화 한다. top score도 계산한다.
+    :param bat_captured: 지금까지 잡은 박쥐 수
+    :param text: 출력 메세지
+    :return:
+    """
     disp_message(text, WINDOWWIDTH/2, WINDOWHEIGHT/2, 115, RED, "center")
     BatEnemy.bat_passed = 0
+    # 가지고 있는 재생성 시간을 다 초기화 한다.
     del(BatEnemy.bat_remove_time[:])
+    # 가끔 초기화 되지 않는 오류가 있어 명시적으로 초기화 한다.
+    BatEnemy.bat_num = 0
     AirPlane.bat_max_catch = max(bat_captured, AirPlane.bat_max_catch)
     pygame.display.update()
     pygame.time.delay(2000)
@@ -225,12 +270,22 @@ def game_over(bat_captured, text):
 
 
 def draw_bat_score(bat_captured):
+    """
+    왼쪽 위에 score를 출력한다.
+    :param bat_captured: 잡은 박쥐 수
+    :return: None
+    """
     disp_message("Top Score: %d, Bat captured: %d, Bat passed: %d"
                  % (AirPlane.bat_max_catch, bat_captured, BatEnemy.bat_passed),
                  5, 5, 20, WHITE)
 
 
 def recreate_bat():
+    """
+    BATTIME만큼의 시간이 지났는지 확인하는 함수
+    시간이 지나면 박쥐를 만든다. 비어있는 경우는 check하고 들어온다.
+    :return: bool
+    """
     for remove_time in BatEnemy.bat_remove_time:
         if BatEnemy.BATTIME <= time.time() - remove_time:
             BatEnemy.bat_remove_time.pop(0)
