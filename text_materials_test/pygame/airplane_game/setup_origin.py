@@ -21,5 +21,5 @@ setup(
     description="test",
     author="Kim Jaehyeong",
     options={"build_exe": build_exe_options},
-    executables=[Executable("8_rule_add.py", base=base)]
+    executables=[Executable("8_add_rule.py", base=base)]
 )
