@@ -37,6 +37,11 @@ class AirPlane(pygame.sprite.Sprite):
         self.rect.top = WINDOWWIDTH * 0.8
 
     def change_y(self, value):
+        """
+        비행기의 y값을 바꾼다.
+        :param value: 이동거리
+        :return:
+        """
         if self.rect.top + value < 0:
             self.rect.top = 0
         elif self.rect.top + value > WINDOWHEIGHT - self.image.get_height():
@@ -45,6 +50,11 @@ class AirPlane(pygame.sprite.Sprite):
             self.rect.top += value
 
     def change_x(self, value):
+        """
+        비행기의 x값을 바꾼다.
+        :param value: 이동거리
+        :return:
+        """
         if self.rect.left + value < 0:
             self.rect.left = 0
         elif self.rect.left + value > WINDOWWIDTH - self.image.get_width():
@@ -53,6 +63,10 @@ class AirPlane(pygame.sprite.Sprite):
             self.rect.left += value
 
     def position(self):
+        """
+        위치를 반환해준다.
+        :return: 왼쪽 위 좌표
+        """
         return self.rect.left, self.rect.top
 
 
@@ -138,6 +152,7 @@ class BatEnemy(pygame.sprite.Sprite):
     def __del__(self):
         """
         BatEnemy.bat_num을 줄인다.
+        또한, remove_time이 너무 붙지 않도록 짧게 잡혔을 경우 0.5초의 시간적 여유를 준다.
         :return:
         """
         BatEnemy.bat_num -= 1
@@ -185,6 +200,13 @@ class AirplaneBullet(pygame.sprite.Sprite):
 
 
 def text_obj(text, font, color):
+    """
+    text surface를 만들어준다.
+    :param text: 사용할 text
+    :param font: 사용할 폰트 객체
+    :param color: 색
+    :return: surface, rect
+    """
     text_surface = font.render(text, True, color)
     return text_surface, text_surface.get_rect()
 
