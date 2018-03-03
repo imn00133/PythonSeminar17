@@ -428,7 +428,7 @@ def main():
             # group이 그냥 초기화되면, 소멸자가 작동하지 않는 것으로 보아, 객체가 남는 것으로 보인다.
             # group을 명시적으로 비워준다.
             if airplane_crash_bat:
-                # 박쥐와 비행기 충돌시, 리스트로 batsprite를 넘겨줘서 bat객체가 삭제되지 않는 것으로 추정.
+                # 박쥐와 비행기 충돌시, 리스트로 batsprite를 넘겨줘서 bat객체가 삭제되지 않는 것으로 추정.  비워준다.
                 del airplane_crash_bat[:]
             sprite_group.empty()
             bullet_group.empty()
