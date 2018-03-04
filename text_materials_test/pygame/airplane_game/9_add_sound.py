@@ -36,7 +36,7 @@ class AirPlane(pygame.sprite.Sprite):
         self.image = IMAGESDICT['airplane']
         self.rect = self.image.get_rect()
         self.rect.left = WINDOWWIDTH * 0.05
-        self.rect.top = WINDOWWIDTH * 0.8
+        self.rect.top = WINDOWHEIGHT * 0.8
         self.bat_catch = 0
 
     def change_y(self, value):
@@ -286,12 +286,11 @@ def recreate_bat():
     시간이 지나면 박쥐를 만든다. 비어있는 경우는 check하고 들어온다.
     :return: bool
     """
-    for remove_time in BatEnemy.bat_remove_time:
-        if BatEnemy.BATTIME <= time.time() - remove_time:
-            BatEnemy.bat_remove_time.pop(0)
-            return True
-        else:
-            return False
+    if BatEnemy.BATTIME <= time.time() - BatEnemy.bat_remove_time[0]:
+        BatEnemy.bat_remove_time.pop(0)
+        return True
+    else:
+        return False
 
 
 def init_enemy_pos(image):
@@ -349,7 +348,7 @@ def main():
     fireball_max_num = 1
 
     # 게임 배경음악 초기화
-    pygame.mixer.music.load("sounds/Birds_in_Flight.mp3")
+    pygame.mixer.music.load(SOUNDSDICT["background"])
     pygame.mixer.music.play(-1, 0.0)
 
     # game loop
@@ -424,6 +423,7 @@ def main():
             # 박쥐, fireball의 숫자를 규칙에 따라 늘린다.
             if airplane.bat_catch_return() % 2 == 0:
                 bat_maximum_num += 1
+                BatEnemy.bat_remove_time.insert(0, time.time())
             if airplane.bat_catch_return() % 4 == 0:
                 fireball_max_num += 1
 
@@ -441,6 +441,7 @@ def main():
             bat_group.empty()
             boom_group.empty()
             fireball_group.empty()
+            SOUNDSDICT['crash'].play()
             game_over(airplane.bat_catch_return(), "Crashed!")
 
         # 박쥐를 잡은 개수와 넘어간 개수를 띄운다.
@@ -473,6 +474,7 @@ def game_init():
     # DISPLAY Surface 설정하기
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
     pygame.display.set_caption('PyFlying')
+    pygame.display.set_icon(pygame.image.load('images/icon.png'))
 
     # 이미지 받아오기
     IMAGESDICT = {"airplane": pygame.image.load('images/plane.png'),
@@ -486,7 +488,9 @@ def game_init():
 
     # 음향 받아오기
     SOUNDSDICT = {"shot": pygame.mixer.Sound("sounds/shot.wav"),
-                  "explosion": pygame.mixer.Sound("sounds/explosion.wav")}
+                  "explosion": pygame.mixer.Sound("sounds/explosion.wav"),
+                  "crash": pygame.mixer.Sound("sounds/airplane_crash.wav"),
+                  "background": "sounds/Birds_in_Flight.mp3"}
 
     # 배경 이미지 게임 윈도우 크기에 맞추기
     assert WINDOWWIDTH <= ORIGINBACKGROUNDWIDTH or WINDOWHEIGHT <= ORIGINBACKGROUNDHEIGHT,\
