@@ -34,7 +34,7 @@ class AirPlane(pygame.sprite.Sprite):
         self.image = IMAGESDICT['airplane']
         self.rect = self.image.get_rect()
         self.rect.left = WINDOWWIDTH * 0.05
-        self.rect.top = WINDOWWIDTH * 0.8
+        self.rect.top = WINDOWHEIGHT * 0.8
 
     def change_y(self, value):
         """
@@ -252,7 +252,7 @@ def main():
     global FPSCLOCK, DISPLAYSURF
     global IMAGESDICT
 
-    # 비행기 왼쪽 초기 위치
+    # 비행기 x, y 변화값을 0으로 초기화 한다.
     airplane_y_change = 0
     airplane_x_change = 0
 
@@ -340,6 +340,7 @@ def main():
         # 비행기와 박쥐, 파이어볼의 충돌 검사
         airplane_crash_bat = pygame.sprite.spritecollide(airplane, bat_group, False)
         airplane_crash_fire = pygame.sprite.spritecollide(airplane, fireball_group, False)
+        print(airplane_crash_bat)
         if airplane_crash_bat or airplane_crash_fire:
             # group이 그냥 초기화되면, 소멸자가 작동하지 않는 것으로 보아, 객체가 남는 것으로 보인다.
             # group을 명시적으로 비워준다.
