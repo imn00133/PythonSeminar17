@@ -36,7 +36,7 @@ class AirPlane(pygame.sprite.Sprite):
         self.image = IMAGESDICT['airplane']
         self.rect = self.image.get_rect()
         self.rect.left = WINDOWWIDTH * 0.05
-        self.rect.top = WINDOWWIDTH * 0.8
+        self.rect.top = WINDOWHEIGHT * 0.8
         self.bat_catch = 0
 
     def change_y(self, value):
@@ -286,12 +286,11 @@ def recreate_bat():
     시간이 지나면 박쥐를 만든다. 비어있는 경우는 check하고 들어온다.
     :return: bool
     """
-    for remove_time in BatEnemy.bat_remove_time:
-        if BatEnemy.BATTIME <= time.time() - remove_time:
-            BatEnemy.bat_remove_time.pop(0)
-            return True
-        else:
-            return False
+    if BatEnemy.BATTIME <= time.time() - BatEnemy.bat_remove_time[0]:
+        BatEnemy.bat_remove_time.pop(0)
+        return True
+    else:
+        return False
 
 
 def init_enemy_pos(image):
@@ -321,7 +320,7 @@ def main():
     global FPSCLOCK, DISPLAYSURF
     global IMAGESDICT
 
-    # 비행기 왼쪽 초기 위치
+    # 비행기 x, y 변화값을 0으로 초기화 한다.
     airplane_y_change = 0
     airplane_x_change = 0
 
@@ -418,6 +417,7 @@ def main():
             # 박쥐, fireball의 숫자를 규칙에 따라 늘린다.
             if airplane.bat_catch_return() % 2 == 0:
                 bat_maximum_num += 1
+                BatEnemy.bat_remove_time.insert(0, time.time())
             if airplane.bat_catch_return() % 4 == 0:
                 fireball_max_num += 1
 
@@ -428,7 +428,7 @@ def main():
             # group이 그냥 초기화되면, 소멸자가 작동하지 않는 것으로 보아, 객체가 남는 것으로 보인다.
             # group을 명시적으로 비워준다.
             if airplane_crash_bat:
-                # 박쥐와 비행기 충돌시, 리스트로 batsprite를 넘겨줘서 bat객체가 삭제되지 않는 것으로 추정.  비워준다.
+                # 박쥐와 비행기 충돌시, 리스트로 batsprite를 넘겨줘서 bat객체가 삭제되지 않는 것으로 추정. 비워준다.
                 del airplane_crash_bat[:]
             sprite_group.empty()
             bullet_group.empty()
