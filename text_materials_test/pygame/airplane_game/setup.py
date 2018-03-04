@@ -9,7 +9,8 @@ build_exe_options = {
 """
 build_exe_options = dict(
     excludes=["numpy"],
-    include_files=["images/"]
+    include_files=["images/",
+                   "sounds/"]
 )
 """
 base = None
