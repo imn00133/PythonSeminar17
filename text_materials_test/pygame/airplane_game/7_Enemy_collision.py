@@ -340,7 +340,6 @@ def main():
         # 비행기와 박쥐, 파이어볼의 충돌 검사
         airplane_crash_bat = pygame.sprite.spritecollide(airplane, bat_group, False)
         airplane_crash_fire = pygame.sprite.spritecollide(airplane, fireball_group, False)
-        print(airplane_crash_bat)
         if airplane_crash_bat or airplane_crash_fire:
             # group이 그냥 초기화되면, 소멸자가 작동하지 않는 것으로 보아, 객체가 남는 것으로 보인다.
             # group을 명시적으로 비워준다.
